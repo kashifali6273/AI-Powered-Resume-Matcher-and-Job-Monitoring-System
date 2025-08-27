@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Matched Jobs</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white min-h-screen py-10 px-4">
+
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Top Bar -->
+    <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+      <div class="text-center md:text-left">
+        <a href="/"
+   class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white w-12 h-12 rounded-full shadow transition"
+   title="Back to Dashboard">
+  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+       xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+  </svg>
+</a>
+
+      </div>
+      <div class="flex items-center space-x-4">
+        <a href="/download" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 font-medium shadow">
+           Download CSV
+        </a>
+        <a href="{{ url_for('logout') }}"
+         class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-full shadow text-sm transition">
+         Logout
+      </a>
+      </div>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="text-3xl font-bold text-center text-blue-300 mb-8"> Top Matched Jobs</h1>
+
+    {% if matches %}
+    <!-- Job Cards -->
+    <div class="grid gap-6">
+      {% for job in matches %}
+      <div class="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition border border-gray-700">
+        <h2 class="text-xl font-bold text-blue-300">
+          <a href="{{ url_for('job_detail', job_id=loop.index0 + (current_page - 1) * 10) }}" class="hover:underline">
+            {{ job.title }}
+          </a>
+        </h2>
+        <p class="text-gray-300 mt-1 font-medium">{{ job.company }} — {{ job.location }}</p>
+        <p class="text-sm mt-2">
+          Match Score:
+          <span class="font-bold text-green-400">{{ "%.1f"|format(job.match_score) }}%</span>
+        </p>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-10 flex justify-center flex-wrap gap-2">
+      {% if current_page > 1 %}
+      <a href="{{ url_for('results_page', page=current_page - 1) }}"
+         class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Previous</a>
+      {% endif %}
+
+      {% for p in range(1, total_pages + 1) %}
+      <a href="{{ url_for('results_page', page=p) }}"
+         class="px-3 py-1 rounded text-sm font-medium
+         {% if p == current_page %}
+            bg-blue-700 text-white
+         {% else %}
+            bg-gray-700 text-blue-300 hover:bg-gray-600
+         {% endif %}">
+        {{ p }}
+      </a>
+      {% endfor %}
+
+      {% if current_page < total_pages %}
+      <a href="{{ url_for('results_page', page=current_page + 1) }}"
+         class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</a>
+      {% endif %}
+    </div>
+
+    {% else %}
+      <p class="text-center text-gray-400 mt-20 text-lg">No matches found.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

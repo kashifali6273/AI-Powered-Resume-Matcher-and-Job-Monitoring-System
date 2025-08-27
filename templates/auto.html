@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Auto Detect Job Matching</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script>
+      function showLoader() {
+        document.getElementById("loader").classList.remove("hidden");
+      }
+    </script>
+  </head>
+  <body
+    class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen text-white flex items-center justify-center px-4"
+  >
+    <div
+      class="w-full max-w-xl bg-white bg-opacity-10 backdrop-blur-lg p-6 rounded-2xl shadow-lg"
+    >
+     <!-- Top Bar with Back Button Fixed Top-Right -->
+<div class="relative mb-6">
+  <p class="text-blue-300 font-semibold">{{ current_user.username }}</p>
+
+  <!-- Back to Dashboard Button -->
+  <a href="/"
+     class="absolute top-0 right-0 bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow transition"
+     title="Back to Dashboard">
+    <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+         xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+    </svg>
+  </a>
+</div>
+
+      <!-- Flash messages -->
+      {% with messages = get_flashed_messages(with_categories=true) %} {% if
+      messages %}
+      <div class="space-y-3 mb-6">
+        {% for category, message in messages %}
+        <div
+          class="p-3 rounded shadow text-sm font-medium {% if category == 'success' %} bg-green-600 text-white {% elif category == 'danger' %} bg-red-600 text-white {% elif category == 'warning' %} bg-yellow-500 text-gray-900 {% else %} bg-gray-700 text-white {% endif %}"
+        >
+          {{ message }}
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+      <!-- Title -->
+      <h1 class="text-3xl text-center font-bold text-blue-200 mb-4">
+        Auto Detect Job Matcher
+      </h1>
+
+      <!-- Navigation Tabs -->
+
+      <!-- Form -->
+      <form
+        action="/auto"
+        method="post"
+        enctype="multipart/form-data"
+        class="space-y-6"
+        onsubmit="showLoader()"
+      >
+        <!-- Select Existing Resume -->
+        {% if resumes %}
+        <div>
+          <label class="block font-semibold text-blue-100 mb-2"
+            >Select an Existing Resume:</label
+          >
+          <select
+            name="selected_resume"
+            class="w-full bg-white text-gray-800 rounded px-3 py-2"
+          >
+            <option value="">-- None --</option>
+            {% for resume in resumes %}
+            <option value="{{ resume.id }}">{{ resume.filename }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        {% endif %}
+
+        <!-- Upload New Resume -->
+        <div>
+          <label class="block font-semibold text-blue-100 mb-2"
+            >Or Upload New Resume (PDF):</label
+          >
+          <input
+            type="file"
+            name="resume"
+            accept=".pdf"
+            class="w-full bg-white text-gray-800 rounded px-3 py-2"
+          />
+        </div>
+
+        <!-- Submit -->
+        <div>
+          <button
+            type="submit"
+            class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded shadow"
+          >
+            Auto Detect & Match
+          </button>
+        </div>
+
+        <!-- Loader -->
+        <div
+          id="loader"
+          class="hidden text-center text-blue-300 font-medium mt-4"
+        >
+          ⏳ Detecting job role and matching... please wait
+        </div>
+      </form>
+      
+    </div>
+  </body>
+</html>

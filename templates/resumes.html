@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Resumes</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen py-10">
+<div class="max-w-3xl mx-auto px-4">
+    <div class="flex justify-between mb-6">
+        <h1 class="text-2xl font-bold text-blue-800">📄 My Resumes</h1>
+        <a href="/" class="text-blue-600 font-semibold hover:underline">🔙 Back</a>
+    </div>
+
+    <form action="/resumes" method="post" enctype="multipart/form-data" class="bg-white p-4 rounded shadow mb-6">
+        <label class="block font-semibold mb-2">Upload Resume (PDF):</label>
+        <input type="file" name="resume" accept=".pdf" required class="w-full border border-gray-300 p-2 rounded mb-3">
+        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+            ⬆️ Upload
+        </button>
+    </form>
+
+    {% if resumes %}
+        <table class="w-full bg-white rounded shadow text-left text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3">Original Filename</th>
+                    <th class="p-3">Uploaded</th>
+                    <th class="p-3">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for resume in resumes %}
+                    <tr class="border-t">
+                        <td class="p-3">{{ resume.original_filename }}</td>
+                        <td class="p-3">{{ resume.uploaded_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td class="p-3">
+                            <a href="{{ url_for('download_resume', resume_id=resume.id) }}" class="text-blue-600 hover:underline mr-3">Download</a>
+                            <a href="{{ url_for('delete_resume', resume_id=resume.id) }}" class="text-red-600 hover:underline">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-gray-600">You haven't uploaded any resumes yet.</p>
+    {% endif %}
+</div>
+</body>
+</html>

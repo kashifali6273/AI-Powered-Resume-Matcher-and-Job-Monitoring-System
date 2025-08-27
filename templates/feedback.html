@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Resume Feedback</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .fade-in {
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen flex items-center justify-center text-white px-4">
+
+  <div class="w-full max-w-3xl bg-white bg-opacity-10 backdrop-blur-md p-6 rounded-2xl shadow-lg">
+
+    <!-- Header -->
+    <div class="relative mb-6">
+      <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-200 text-center">
+        AI Resume Feedback
+      </h1>
+
+      <a href="/"
+         class="absolute right-0 top-0 bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow transition"
+         title="Back to Dashboard">
+        <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+             xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </a>
+    </div>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-3 mb-6 fade-in">
+          {% for category, message in messages %}
+            <div class="p-3 rounded shadow text-sm font-medium
+                        {% if category == 'success' %}
+                          bg-green-600 text-white
+                        {% elif category == 'danger' %}
+                          bg-red-600 text-white
+                        {% elif category == 'warning' %}
+                          bg-yellow-500 text-gray-900
+                        {% else %}
+                          bg-gray-700 text-white
+                        {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Upload/Select Form -->
+    <form id="feedbackForm" action="{{ url_for('ai_feedback') }}" method="post" enctype="multipart/form-data" class="space-y-6 mb-8">
+
+      <!-- Select Resume -->
+      <div>
+        <label class="block font-semibold text-blue-100 mb-1">Select an existing resume:</label>
+        <select name="selected_resume" class="w-full p-2 rounded bg-white text-gray-900">
+          <option value="">-- Select Resume --</option>
+          {% for resume in resumes %}
+            <option value="{{ resume.id }}">{{ resume.filename }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <!-- Upload Resume -->
+      <div>
+        <label class="block font-semibold text-blue-100 mb-1">Or upload a new resume (PDF only):</label>
+        <input type="file" name="resume" accept=".pdf" class="w-full p-2 rounded bg-white text-gray-900">
+      </div>
+
+      <!-- Submit Button with Loader -->
+      <div class="relative">
+        <button type="submit"
+                id="submitBtn"
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded font-semibold shadow transition">
+          Get Feedback
+        </button>
+
+        <div id="loader" class="hidden absolute inset-0 flex items-center justify-center bg-blue-800 bg-opacity-70 rounded">
+          <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+               viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+          </svg>
+        </div>
+      </div>
+    </form>
+
+    <!-- Feedback Section -->
+    {% if feedback %}
+      <div class="mt-8 fade-in">
+        <h2 class="text-xl font-bold text-blue-100 mb-2">AI Feedback</h2>
+        <div class="whitespace-pre-wrap bg-white bg-opacity-20 p-4 rounded text-white">
+          {{ feedback }}
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Improved Resume Section -->
+    {% if improved_resume %}
+      <div class="mt-10 fade-in">
+        <h2 class="text-xl font-bold text-blue-100 mb-2">Improved Resume</h2>
+        <div class="whitespace-pre-wrap bg-green-600 bg-opacity-20 p-4 rounded text-white mb-4">
+          {{ improved_resume }}
+        </div>
+        <a href="{{ url_for('download_improved_resume') }}"
+           class="inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded font-semibold">
+           ⬇ Download Improved Resume
+        </a>
+      </div>
+    {% endif %}
+
+  </div>
+
+  <script>
+    const form = document.getElementById("feedbackForm");
+    const loader = document.getElementById("loader");
+    const submitBtn = document.getElementById("submitBtn");
+
+    form.addEventListener("submit", () => {
+      submitBtn.classList.add("opacity-50", "pointer-events-none");
+      loader.classList.remove("hidden");
+    });
+  </script>
+</body>
+</html>

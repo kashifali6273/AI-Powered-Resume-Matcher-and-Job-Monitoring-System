@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Watchlist Results</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white py-10 px-4">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-6">
+      <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-3 mb-6">
+          {% for category, message in messages %}
+            <div class="p-3 rounded shadow text-sm font-medium
+                        {% if category == 'success' %}
+                          bg-green-600 text-white
+                        {% elif category == 'danger' %}
+                          bg-red-600 text-white
+                        {% elif category == 'warning' %}
+                          bg-yellow-500 text-gray-900
+                        {% else %}
+                          bg-gray-700 text-white
+                        {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+      <h1 class="text-3xl font-bold text-blue-400"> Watchlist Matches</h1>
+  <a href="/"
+   class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white w-12 h-12 rounded-full shadow transition"
+   title="Back to Dashboard">
+  <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+       xmlns="http://www.w3.org/2000/svg">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+  </svg>
+</a>
+
+    </div>
+
+    {% if matches.items %}
+      <div class="grid gap-6">
+        {% for match in matches.items %}
+        <div class="bg-gray-800 p-6 rounded-lg shadow hover:shadow-lg transition border border-gray-700">
+          <h2 class="text-xl font-bold text-blue-300">{{ match.job_title }}</h2>
+          <p class="text-gray-300 mt-1 font-medium">{{ match.company }} — {{ match.location }}</p>
+          <p class="text-sm text-blue-400 mt-1">
+            For role: <span class="italic">{{ match.monitoring_rule.job_title }}</span>
+          </p>
+          <p class="text-sm mt-1">
+            Match Score: <span class="font-bold text-green-400">{{ "%.1f"|format(match.match_score) }}%</span>
+          </p>
+          <p class="text-sm text-gray-400 mt-1">Found at: {{ match.found_at.strftime('%Y-%m-%d %H:%M') }}</p>
+
+          <div class="flex items-center space-x-4 mt-3">
+            <a href="{{ match.link }}" target="_blank" class="text-blue-400 hover:underline">🔗 View Job</a>
+            <form method="POST" action="{{ url_for('delete_watchlist_entry', match_id=match.id) }}">
+              <button type="submit" class="text-red-400 hover:text-red-500"> Delete</button>
+            </form>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Pagination -->
+      <div class="mt-10 flex justify-center space-x-2">
+        {% if matches.has_prev %}
+          <a href="{{ url_for('watchlist', page=matches.prev_num) }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Previous</a>
+        {% endif %}
+
+        {% for p in range(1, matches.pages + 1) %}
+          <a href="{{ url_for('watchlist', page=p) }}"
+             class="px-3 py-1 rounded
+             {% if p == matches.page %}
+                bg-blue-700 text-white
+             {% else %}
+                bg-gray-700 text-blue-300 hover:bg-gray-600
+             {% endif %}">
+             {{ p }}
+          </a>
+        {% endfor %}
+
+        {% if matches.has_next %}
+          <a href="{{ url_for('watchlist', page=matches.next_num) }}" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</a>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="text-gray-400 text-center mt-20">No matched jobs found in your watchlist yet.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

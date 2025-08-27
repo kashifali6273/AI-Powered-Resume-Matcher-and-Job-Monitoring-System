@@ -1,0 +1,84 @@
+<!-- templates/auth/register.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register - Resume Matcher</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    .bg-overlay {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(12px);
+    }
+  </style>
+</head>
+<body class="relative min-h-screen flex items-center justify-center overflow-hidden">
+
+  <!-- 🌄 Background Image -->
+  <div class="absolute inset-0 z-0">
+    <img src="{{ url_for('static', filename='pictures/background.jpg') }}"
+         alt="Background"
+         class="w-full h-full object-cover">
+    <div class="absolute inset-0 bg-gradient-to-br from-indigo-900 via-purple-900 to-indigo-800 opacity-80"></div>
+  </div>
+
+  <!-- 🧊 Registration Card -->
+  <div class="relative z-10 w-full max-w-md mx-4 sm:mx-auto p-8 sm:p-10 bg-overlay rounded-xl shadow-2xl text-white">
+    <div class="text-center mb-6">
+      <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-3 mb-6">
+          {% for category, message in messages %}
+            <div class="p-3 rounded shadow text-sm font-medium
+                        {% if category == 'success' %}
+                          bg-green-600 text-white
+                        {% elif category == 'danger' %}
+                          bg-red-600 text-white
+                        {% elif category == 'warning' %}
+                          bg-yellow-500 text-gray-900
+                        {% else %}
+                          bg-gray-700 text-white
+                        {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+      <h1 class="text-3xl sm:text-4xl font-extrabold"> Create Account</h1>
+      <p class="mt-2 text-sm sm:text-base text-indigo-200">Join Resume Matcher — it's fast and free.</p>
+    </div>
+
+    <form method="POST" class="space-y-5">
+      <div>
+        <label class="block text-sm font-medium text-indigo-100 mb-1">Username</label>
+        <input type="text" name="username" required
+               class="w-full px-4 py-2 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-indigo-100 mb-1">Email</label>
+        <input type="email" name="email" required
+               class="w-full px-4 py-2 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-indigo-100 mb-1">Password</label>
+        <input type="password" name="password" required
+               class="w-full px-4 py-2 rounded-md bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-400 transition">
+      </div>
+      <button type="submit"
+              class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded-md transition shadow-md">
+        Register
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-indigo-200 mt-6">
+      Already have an account?
+      <a href="{{ url_for('login') }}" class="text-white font-medium hover:underline">Login here</a>
+    </p>
+  </div>
+
+</body>
+</html>

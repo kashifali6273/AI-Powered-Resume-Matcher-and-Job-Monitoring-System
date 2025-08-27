@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Description Match</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <!-- Animate.css for score animation -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+  <script>
+    function showLoader() {
+      document.getElementById('loader').classList.remove('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-gray-800 min-h-screen flex items-center justify-center text-white px-4">
+
+  <div class="w-full max-w-3xl bg-white bg-opacity-10 backdrop-blur-md p-6 rounded-2xl shadow-lg">
+
+    <!-- Header -->
+    <div class="relative mb-6">
+  <!-- Title Centered -->
+  <h1 class="text-xl sm:text-2xl md:text-3xl font-bold text-blue-200 text-center">
+    Job Description Matcher
+  </h1>
+
+  <!-- Back Button: Top Right Always -->
+  <a href="/"
+     class="absolute right-0 top-0 bg-indigo-600 hover:bg-indigo-700 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center shadow transition"
+     title="Back to Dashboard">
+    <svg class="h-5 w-5 sm:h-6 sm:w-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
+         xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path>
+    </svg>
+  </a>
+</div>
+
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="space-y-3 mb-6">
+          {% for category, message in messages %}
+            <div class="p-3 rounded shadow text-sm font-medium
+                        {% if category == 'success' %}
+                          bg-green-600 text-white
+                        {% elif category == 'danger' %}
+                          bg-red-600 text-white
+                        {% elif category == 'warning' %}
+                          bg-yellow-500 text-gray-900
+                        {% else %}
+                          bg-gray-700 text-white
+                        {% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Form -->
+    <form action="{{ url_for('description_match') }}" method="post" enctype="multipart/form-data" class="space-y-6" onsubmit="showLoader()">
+
+      <!-- Job Description -->
+      <div>
+        <label class="block font-semibold text-blue-100 mb-1">Paste Job Description:</label>
+        <textarea name="job_description" rows="6" required class="w-full bg-white text-gray-900 rounded p-3"></textarea>
+      </div>
+
+      <!-- Resume Upload -->
+      <div>
+        <label class="block font-semibold text-blue-100 mb-1">Upload Your Resume (PDF):</label>
+        <input type="file" name="resume" accept=".pdf" required class="w-full bg-white text-gray-900 rounded p-2">
+      </div>
+
+      <!-- Submit Button -->
+      <div>
+        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded shadow">
+          Get Match Score & Suggestion
+        </button>
+      </div>
+
+      <!-- Loader -->
+      <div id="loader" class="hidden text-center text-blue-300 font-medium mt-4">
+        ⏳ Analyzing... please wait
+      </div>
+    </form>
+
+    <!-- Results -->
+    {% if feedback %}
+    <div class="mt-10">
+      <h2 class="text-xl font-bold text-blue-100 mb-2">Match Results</h2>
+      
+      {% if score %}
+        <p class="text-lg text-green-300 font-semibold mb-4 animate__animated animate__fadeInUp">
+          Match Score: <span class="text-2xl animate__animated animate__pulse animate__infinite">{{ score }}/100</span>
+        </p>
+      {% endif %}
+
+      <div class="bg-white bg-opacity-20 p-4 rounded text-white whitespace-pre-wrap">
+        {{ feedback }}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</body>
+</html>

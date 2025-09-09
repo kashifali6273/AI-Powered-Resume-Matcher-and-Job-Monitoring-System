@@ -81,6 +81,11 @@ The application demonstrates practical use of **Natural Language Processing (NLP
 - Python 3.8+  
 - pip (Python package manager)  
 - Google Gemini API Key (for AI features)  
+## Screenshots of App
+
+### Login Page
+![Training Screenshot](screenshots/login.png)  
+*Example: model training progress*  
 
 ### Steps
 1. Clone the repository:

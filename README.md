@@ -85,10 +85,26 @@ The application demonstrates practical use of **Natural Language Processing (NLP
 
 ### Login Page
 ![Training Screenshot](screenshots/login.png)  
-*Example: model training progress*  
+----------------------------------------------------------
+### Register Page
+![Training Screenshot](screenshots/signup.png)  
+----------------------------------------------------------
+### Dashboard Page
+![Training Screenshot](screenshots/dashboard.png)  
+----------------------------------------------------------
+### Manual Search Page
+![Training Screenshot](screenshots/manual.png)  
+----------------------------------------------------------
+### Auto Search Page
+![Training Screenshot](screenshots/auto.png)  
+----------------------------------------------------------
+### Real Time Job monitering Page
+![Training Screenshot](screenshots/jobmonitering.png)  
+----------------------------------------------------------
+### Ai Job Description with resume feedback Page
+![Training Screenshot](screenshots/aifeedback.png)  
+----------------------------------------------------------
+### Ai Cv Feedback Page
+![Training Screenshot](screenshots/cvfeedback.png)  
+----------------------------------------------------------
 
-### Steps
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/resume-matcher.git
-   cd resume-matcher
